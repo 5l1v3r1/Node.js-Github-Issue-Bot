@@ -6,7 +6,7 @@ SETTINGS.GIT = {};
 SETTINGS.IRC.channelName = '#firefly';
 SETTINGS.IRC.serverName = 'irc.esper.net';
 SETTINGS.IRC.botName = 'TicketBot';
-SETTINGS.IRC.prefix = "*** ";
+SETTINGS.IRC.prefix = "New Ticket *** ";
 SETTINGS.IRC.suffix = " ***";
 
 SETTINGS.GIT.user = 'PherricOxide';
@@ -25,6 +25,8 @@ var client = new irc.Client(SETTINGS.IRC.serverName, SETTINGS.IRC.botName, {
     , channels: [SETTINGS.IRC.channelName]
     , showErrors: true
     , secure: false
+    , autoRejoin: true
+    , autoConnect: true
 });
 
 var github = new githubAPI({
@@ -35,8 +37,6 @@ var lastSeenTicket = -1;
 
 
 function poll() {
-    console.log("connect event");
-
     github.issues.repoIssues({
 	user: SETTINGS.GIT.user
 	, repo: SETTINGS.GIT.repo
