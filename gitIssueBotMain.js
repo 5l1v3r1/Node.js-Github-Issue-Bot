@@ -1,38 +1,45 @@
-var irc = require('irc');
-var githubAPI = require('github');
-
 var SETTINGS = {};
-var SETTINGS.IRC = {};
-var SETTINGS.GIT = {};
+SETTINGS.IRC = {};
+SETTINGS.GIT = {};
 
-SETTINGS.IRC.channelname = '#firefly';
-SETTINGS.IRC.servername = 'irc.esper.net';
-SETTINGS.IRC.botname = 'TicketBot';
+// ### Configure Here ### //
+SETTINGS.IRC.channelName = '#firefly';
+SETTINGS.IRC.serverName = 'irc.esper.net';
+SETTINGS.IRC.botName = 'TicketBot';
+SETTINGS.IRC.prefix = "*** ";
+SETTINGS.IRC.suffix = " ***";
 
 SETTINGS.GIT.user = 'PherricOxide';
-SETTINGS.GIT.user = 'gitIssueBot';
+SETTINGS.GIT.repo = 'Node.js-Github-Issue-Bot';
+SETTINGS.GIT.version = '3.0.0';
 
 SETTINGS.pollTime = 5000;
 
-var client = new irc.Client(SETTINGS.IRC.servername, SETTINGS.IRC.botname, {
+
+// ### Code ### //
+var irc = require('irc');
+var githubAPI = require('github');
+
+var client = new irc.Client(SETTINGS.IRC.serverName, SETTINGS.IRC.botName, {
     port: 6667
-    , channels: [SETTINGS.channelname]
+    , channels: [SETTINGS.IRC.channelName]
     , showErrors: true
     , secure: false
 });
 
 var github = new githubAPI({
-    version: "3.0.0"
+    version: SETTINGS.GIT.version
 });
 
-var lastSeenTicket = 0;
+var lastSeenTicket = -1;
+
 
 function poll() {
     console.log("connect event");
 
     github.issues.repoIssues({
-	user: "DataSoft"
-	, repo: "Nova"
+	user: SETTINGS.GIT.user
+	, repo: SETTINGS.GIT.repo
 	, state: "open"
 	, sort: "created"
 	, page: 0
@@ -44,22 +51,18 @@ function poll() {
 		SendIssueToIRC(res[i]);
 	    } 
 	}	
-
     });
-
 }
+
 
 function SendIssueToIRC(issue) {
-    client.say(SETTINGS.channelname, "***" + issue.url + "***");
-    client.say(SETTINGS.channelname, "***" + issue.user.login + ": " + issue.title + "***");
+    client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.url + SETTINGS.IRC.suffix);
+    client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.user.login + ": " + issue.title + SETTINGS.IRC.suffix);
 }
 
 
-client.addListener("join" + SETTINGS.channelname, function() {
+client.addListener("join" + SETTINGS.IRC.channelName, function() {
     var timer = setInterval(poll, SETTINGS.pollTime);
-});
-
-client.addListener("message" + SETTINGS.channelname, function(from, message) {
 });
 
 
@@ -68,4 +71,6 @@ client.addListener("error", function(err) {
     console.log(err);
 });
 
+// Use this if we ever want to parse user commands
+//client.addListener("message" + SETTINGS.IRC.channelName, function(from, message) {});
 
