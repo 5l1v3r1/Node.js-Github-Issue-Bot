@@ -30,7 +30,7 @@ SETTINGS.IRC.prefix = "New Ticket *** ";
 SETTINGS.IRC.suffix = " ***";
 
 SETTINGS.GIT.version = '3.0.0';
-SETTINGS.pollTime = 5000;
+SETTINGS.pollTime = 100000;
 
 // ### Repositories to announce new issues on ### //
 SETTINGS.GIT.user.push('PherricOxide');
