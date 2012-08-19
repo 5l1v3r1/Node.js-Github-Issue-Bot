@@ -59,6 +59,8 @@ for (var i = 0; i < SETTINGS.GIT.user.length; i++) {
     lastSeenTicket[i] = -1; 
 }
 
+var polling = false;
+
 var client = new irc.Client(SETTINGS.IRC.serverName, SETTINGS.IRC.botName, {
     port: 6667
     , channels: [SETTINGS.IRC.channelName]
@@ -114,10 +116,14 @@ function SendIssueToIRC(issue) {
 }
 
 
-client.addListener("join" + SETTINGS.IRC.channelName, function() {
-    console.log("Joined channel " + SETTINGS.IRC.channelName);
-    var timer = setInterval(poll, SETTINGS.pollTime);
-    console.log("Polling github for new issues every " + SETTINGS.pollTime + "ms");
+client.addListener("join" + SETTINGS.IRC.channelName, function(nick, message) {
+    if (nick == SETTINGS.IRC.botName && !polling) {
+	console.log("Joined channel " + SETTINGS.IRC.channelName);
+        polling = true;
+        var timer = setInterval(poll, SETTINGS.pollTime);
+        console.log("Polling github for new issues every " + SETTINGS.pollTime + "ms");
+	poll();
+    }
 });
 
 
