@@ -83,7 +83,7 @@ function poll() {
 	    , state: "open"
 	    , sort: "created"
 	    , page: 0
-	    , per_page: 5
+	    , per_page: 25
 	}, function(err, res) {
 	    if (err != null) {
 		console.log("ERROR when polling git for issues");
