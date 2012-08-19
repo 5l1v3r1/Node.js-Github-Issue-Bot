@@ -1,4 +1,4 @@
-Simple IRC bot that glues together a github and IRC library to announce new issues for github projects in an IRC server.
+Simple IRC bot that glues together a github and IRC library to announce new issues for github projects in an IRC channel.
 
 To run,
     
