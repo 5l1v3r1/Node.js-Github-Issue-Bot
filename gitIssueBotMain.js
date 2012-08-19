@@ -88,6 +88,7 @@ function poll() {
 	    if (err != null) {
 		console.log("ERROR when polling git for issues");
 		console.log(err);
+		return;
 	    }
 	   
 	    if (res.length > 0 && lastSeenTicket[repoIndex] < 0) {
