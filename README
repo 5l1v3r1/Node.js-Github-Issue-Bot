@@ -1,0 +1,7 @@
+Simple IRC bot that glues together a github and IRC library to announce new issues for github projects in an IRC server.
+
+To run,
+    
+    node gitIssueBotMain.js
+
+Bot configuration is inside the gitIssueBotMain.js file at the top.
