@@ -111,7 +111,7 @@ function poll() {
 
 
 function SendIssueToIRC(issue) {
-    client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.url + SETTINGS.IRC.suffix);
+    client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.html_url + SETTINGS.IRC.suffix);
     client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.user.login + ": " + issue.title + SETTINGS.IRC.suffix);
 }
 
