@@ -127,6 +127,8 @@ function SendIssueDetails(user, repo, number, to) {
 			console.log(err);
 			return;	
 		} else {
+			client.say(to, res.html_url);
+			client.say(to, number + ": " + res.title);
 			client.say(to, res.body);
 		}
 	});
