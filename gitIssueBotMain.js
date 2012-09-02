@@ -116,15 +116,13 @@ function SendIssueToIRC(issue) {
 }
 
 function SendIssueDetails(user, repo, number, to) {
-	console.log(repo);
-	console.log(user);
-	console.log(number);
 	github.issues.getRepoIssue({
 		user: user
 		, repo: repo
 		, number: number
 	}, function(err, res) {
 		if (err != null) {
+			client.say(to, "ERROR when fetching ticket");
 			console.log("ERROR when fetching ticket");
 			console.log(err);
 			return;	
