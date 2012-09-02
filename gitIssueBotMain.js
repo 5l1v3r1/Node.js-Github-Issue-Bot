@@ -115,6 +115,27 @@ function SendIssueToIRC(issue) {
     client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.user.login + ": " + issue.title + SETTINGS.IRC.suffix);
 }
 
+function SendIssueDetails(user, repo, number, to) {
+	console.log(repo);
+	console.log(user);
+	console.log(number);
+	github.issues.getRepoIssue({
+		user: user
+		, repo: repo
+		, number: number
+	}, function(err, res) {
+		if (err != null) {
+			console.log("ERROR when fetching ticket");
+			console.log(err);
+			return;	
+		} else {
+			client.say(to, res.body);
+		}
+	});
+
+	
+}
+
 
 client.addListener("join" + SETTINGS.IRC.channelName, function(nick, message) {
     if (nick == SETTINGS.IRC.botName && !polling) {
@@ -133,5 +154,11 @@ client.addListener("error", function(err) {
 });
 
 // Use this if we ever want to parse user commands
-//client.addListener("message" + SETTINGS.IRC.channelName, function(from, message) {});
+// TODO: Accept PMs or monitoring multiple channels
+client.addListener("message" + SETTINGS.IRC.channelName, function(from, message) {
+	var match = message.match(/!details (.+)\/(.+)\/#?(\d+)/);
+	if (match != null) {
+		SendIssueDetails(match[1], match[2], match[3], SETTINGS.IRC.channelName);
+	}
+});
 
