@@ -109,6 +109,12 @@ function poll() {
     }
 }
 
+function SendHelp(to) {
+	client.say(to, "!issue user/repo/number");
+	client.say(to, "!milestones user/repo/(closed|open)");
+	client.say(to, "!milestone user/repo/number");
+	client.say(to, "!help");
+}
 
 function SendIssueToIRC(issue) {
     client.say(SETTINGS.IRC.channelName, SETTINGS.IRC.prefix + issue.html_url + SETTINGS.IRC.suffix);
@@ -131,9 +137,50 @@ function SendIssueDetails(user, repo, number, to) {
 			client.say(to, number + ": " + res.title);
 			client.say(to, res.body);
 		}
-	});
+	});	
+}
 
-	
+function SendMilestoneList(user, repo, state, to) {
+	console.log(user + " " + repo + " " + to);
+	github.issues.getAllMilestones({
+		user: user
+		, repo: repo
+		, state: state
+	}, function(err, res) {
+		if (err != null) {
+			client.say(to, "ERROR when fetching milestones");
+			console.log("ERROR when fetching milestones");
+			console.log(err);
+			return;	
+		} else {
+			for (var i = 0; i < res.length; i++) {
+				client.say(to, res[i].number + ": " + res[i].title);
+ 
+			}
+		}
+	});	
+
+}
+
+function SendMilestoneDetails(user, repo, milestone, to) {
+	github.issues.getMilestone({
+		user: user
+		, repo: repo
+		, number: milestone
+	}, function(err, res) {
+		if (err != null) {
+			client.say(to, "ERROR when fetching milestone");
+			console.log("ERROR when fetching milestone");
+			console.log(err);
+			return;	
+		} else {
+			client.say(to, "Title: " + res.title);
+			client.say(to, "Opened Issues: " + res.open_issues);
+			client.say(to, "Closed Issues: " + res.closed_issues);
+			client.say(to, "State: " + res.state);
+		}
+	});	
+
 }
 
 
@@ -153,12 +200,21 @@ client.addListener("error", function(err) {
     console.log(err);
 });
 
+
 // Use this if we ever want to parse user commands
 // TODO: Accept PMs or monitoring multiple channels
 client.addListener("message" + SETTINGS.IRC.channelName, function(from, message) {
-	var match = message.match(/!details (.+)\/(.+)\/#?(\d+)/);
-	if (match != null) {
-		SendIssueDetails(match[1], match[2], match[3], SETTINGS.IRC.channelName);
-	}
+	var match = message.match(/!issue (.+)\/(.+)\/#?(\d+)/);
+	if (match != null) {SendIssueDetails(match[1], match[2], match[3], SETTINGS.IRC.channelName); return}
+	
+	match = message.match(/!help.*/);
+	if (match != null) {SendHelp(SETTINGS.IRC.channelName); return}
+	
+	match = message.match(/!milestone (.+)\/(.+)\/#?(\d+)/);
+	if (match != null) {SendMilestoneDetails(match[1], match[2], match[3], SETTINGS.IRC.channelName); return}
+	
+	match = message.match(/!milestones (.+)\/(.+)\/(.+)/);
+	if (match != null) {SendMilestoneList(match[1], match[2], match[3], SETTINGS.IRC.channelName); return}
+	
 });
 
