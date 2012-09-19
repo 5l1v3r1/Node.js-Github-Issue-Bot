@@ -23,9 +23,9 @@ SETTINGS.GIT.user = new Array();
 SETTINGS.GIT.repo = new Array();
 
 // ### CONFIGURE IRC BOT HERE ### //
-SETTINGS.IRC.serverName = 'irc.esper.net';
+SETTINGS.IRC.serverName = 'irc.oftc.net';
 SETTINGS.IRC.botName = 'TicketBot';
-SETTINGS.IRC.channelName = '#firefly';
+SETTINGS.IRC.channelName = '#nova';
 SETTINGS.IRC.prefix = "New Ticket *** ";
 SETTINGS.IRC.suffix = " ***";
 
@@ -33,9 +33,6 @@ SETTINGS.GIT.version = '3.0.0';
 SETTINGS.pollTime = 100000;
 
 // ### Repositories to announce new issues on ### //
-SETTINGS.GIT.user.push('PherricOxide');
-SETTINGS.GIT.repo.push('Node.js-Github-Issue-Bot');
-
 SETTINGS.GIT.user.push('DataSoft');
 SETTINGS.GIT.repo.push('Nova');
 
@@ -110,10 +107,10 @@ function poll() {
 }
 
 function SendHelp(to) {
-	client.say(to, "!issue user/repo/number");
-	client.say(to, "!milestones user/repo/(closed|open)");
-	client.say(to, "!milestone user/repo/number");
-	client.say(to, "!help");
+	client.say(to, "#issue user/repo/number");
+	client.say(to, "#milestones user/repo/(closed|open)");
+	client.say(to, "#milestone user/repo/number");
+	client.say(to, "#help");
 }
 
 function SendIssueToIRC(issue) {
@@ -204,16 +201,16 @@ client.addListener("error", function(err) {
 // Use this if we ever want to parse user commands
 // TODO: Accept PMs or monitoring multiple channels
 client.addListener("message" + SETTINGS.IRC.channelName, function(from, message) {
-	var match = message.match(/!issue (.+)\/(.+)\/#?(\d+)/);
+	var match = message.match(/#issue (.+)\/(.+)\/#?(\d+)/);
 	if (match != null) {SendIssueDetails(match[1], match[2], match[3], SETTINGS.IRC.channelName); return}
 	
-	match = message.match(/!help.*/);
+	match = message.match(/#help.*/);
 	if (match != null) {SendHelp(SETTINGS.IRC.channelName); return}
 	
-	match = message.match(/!milestone (.+)\/(.+)\/#?(\d+)/);
+	match = message.match(/#milestone (.+)\/(.+)\/#?(\d+)/);
 	if (match != null) {SendMilestoneDetails(match[1], match[2], match[3], SETTINGS.IRC.channelName); return}
 	
-	match = message.match(/!milestones (.+)\/(.+)\/(.+)/);
+	match = message.match(/#milestones (.+)\/(.+)\/(.+)/);
 	if (match != null) {SendMilestoneList(match[1], match[2], match[3], SETTINGS.IRC.channelName); return}
 	
 });
