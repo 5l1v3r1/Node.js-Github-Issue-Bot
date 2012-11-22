@@ -30,7 +30,7 @@ SETTINGS.IRC.prefix = "New Ticket *** ";
 SETTINGS.IRC.suffix = " ***";
 
 SETTINGS.GIT.version = '3.0.0';
-SETTINGS.pollTime = 100000;
+SETTINGS.pollTime = 300000; /* time in milliseconds */
 
 // ### Repositories to announce new issues on ### //
 SETTINGS.GIT.user.push('DataSoft');
